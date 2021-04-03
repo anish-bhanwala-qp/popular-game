@@ -133,7 +133,7 @@ describe("Making moves", () => {
     expect(game.moveCount()).toBe(2);
   });
 
-  it("should not increment th move count when trying to make move without color change", () => {
+  it("should not increment the move count when trying to make move without color change", () => {
     // prettier-ignore
     const input = [
         R, G, G, B,
@@ -191,7 +191,7 @@ describe("Making moves", () => {
     expect(game.gridClone()).toEqual(expected);
   });
 
-  it("should not flip color for diagonal neighbours", () => {
+  it("should not change color for diagonal neighbours", () => {
     // The bottom row has two Red tiles that are diagonally connected
     // prettier-ignore
     const input = [

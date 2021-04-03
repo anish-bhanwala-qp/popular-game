@@ -57,7 +57,6 @@ function calculateNextMove(grid: Array<Color>, dimension: number): Color {
   let selectedColor = colors.find((c) => c !== originColor)!;
   let maxCount = 0;
 
-  console.log(colorCountMap);
   for (const [color, { count }] of colorCountMap) {
     if (count > maxCount) {
       selectedColor = color;
