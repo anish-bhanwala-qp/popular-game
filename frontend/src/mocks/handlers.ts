@@ -22,4 +22,19 @@ export const handlers = [
       })
     );
   }),
+  rest.put("/api/game/make-move", (req, res, ctx) => {
+    return res(
+      ctx.status(200),
+
+      ctx.json({
+        // prettier-ignore
+        grid: [
+              'g', 'g', 'b', 'r', 
+              'g', 'g', 'b', 'r', 
+              'g', 'g', 'b', 'r', 
+              'g', 'g', 'b', 'r'
+            ],
+      })
+    );
+  }),
 ];

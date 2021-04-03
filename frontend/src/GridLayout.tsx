@@ -1,7 +1,11 @@
-import { Grid } from "./models";
+import { Color, Grid } from "./models";
 
-export function GridLayout(props: { grid: Grid; dimension: number }) {
-  const { grid, dimension } = props;
+export function GridLayout(props: {
+  grid: Grid;
+  dimension: number;
+  colors: Array<Color>;
+}) {
+  const { grid, dimension, colors } = props;
   return (
     <div>
       {Array(dimension)
@@ -13,11 +17,21 @@ export function GridLayout(props: { grid: Grid; dimension: number }) {
           // group items (spans) for one row in a div
           return (
             <div className="grid-row" key={rowIndex}>
-              {rowItems.map((color, index) => (
-                <span key={rowStartIndex + index} data-testid="tile">
-                  {color}
-                </span>
-              ))}
+              {rowItems.map((color, index) => {
+                const backgroundColor = colors.find((c) => c.id === color)
+                  ?.color;
+                return (
+                  <span
+                    key={rowStartIndex + index}
+                    data-testid="tile"
+                    style={{
+                      backgroundColor,
+                    }}
+                  >
+                    {color}
+                  </span>
+                );
+              })}
             </div>
           );
         })}

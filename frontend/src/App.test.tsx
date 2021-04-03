@@ -7,6 +7,7 @@ import {
 import App from "./App";
 import { server } from "./mocks/server";
 import { rest } from "msw";
+import userEvent from "@testing-library/user-event";
 
 it("should load app properly on first load", async () => {
   render(<App />);
@@ -42,4 +43,24 @@ it("On server error error message is displayed", async () => {
   await screen.findByText(
     "Oops an error occurred connecting to server. Please refresh."
   );
+});
+
+it("should update the board with new colors when a color is picked", async () => {
+  render(<App />);
+
+  // wait for green color picker to be loaded
+  const greenBtn = await screen.findByRole("button", { name: "green" });
+  userEvent.click(greenBtn);
+
+  // wait for loading text to dissapear
+  const loadingText = await screen.findByText("Loading", { exact: false });
+  await waitForElementToBeRemoved(loadingText);
+
+  const tiles = await screen.findAllByTestId("tile");
+  const greenTiles = tiles.filter(
+    (tile) => tile.style.backgroundColor === "green"
+  );
+
+  // The new layout should have 8 green color tiles
+  expect(greenTiles).toHaveLength(8);
 });

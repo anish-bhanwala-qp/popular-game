@@ -2,7 +2,12 @@ import React, { useEffect, useState } from "react";
 import "./App.css";
 import { ColorPicker } from "./ColorPicker";
 import { GridLayout } from "./GridLayout";
-import { Color, Grid, ServerResponse } from "./models";
+import { Color, ColorId, Grid, ServerResponse } from "./models";
+
+const httpHeaders = {
+  "Content-type": "application/json",
+  Accept: "application/json",
+};
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -11,12 +16,25 @@ function App() {
   const [colors, setColors] = useState<Array<Color>>([]);
   const [dimension, setDimension] = useState<number>(1);
 
+  const colorPickedHandler = (colorId: ColorId) => {
+    setLoading(true);
+
+    fetch("/api/game/make-move", {
+      method: "PUT",
+      headers: httpHeaders,
+      body: JSON.stringify({ colorId }),
+    })
+      .then((res) => res.json())
+      .then((data: { grid: Grid }) => {
+        setGrid([...data.grid]);
+
+        setLoading(false);
+      });
+  };
+
   useEffect(() => {
     fetch("/api/game/init", {
-      headers: {
-        "Content-type": "application/json",
-        Accept: "application/json",
-      },
+      headers: httpHeaders,
     })
       .then((res) => {
         // Display error message
@@ -39,20 +57,27 @@ function App() {
   }, []);
 
   let content = null;
-  if (loading) {
-    content = <span>"Loading..."</span>;
-  } else if (serverError) {
+  if (serverError) {
     content = <span>{serverError}</span>;
   } else {
     content = (
       <div>
-        <GridLayout grid={grid} dimension={dimension} />
-        <ColorPicker originColorId={grid[0]} colors={colors} />
+        <GridLayout grid={grid} dimension={dimension} colors={colors} />
+        <ColorPicker
+          originColorId={grid[0]}
+          colors={colors}
+          onColorPicked={colorPickedHandler}
+        />
       </div>
     );
   }
 
-  return <div className="App">{content}</div>;
+  return (
+    <div className="App">
+      {loading && <div className="loading-overlay">Loading...</div>}
+      {content}
+    </div>
+  );
 }
 
 export default App;
