@@ -1,4 +1,4 @@
-import { Color, colors, GameFactory } from "./Game";
+import { Color, colors, GameFactory, getConnectedNeighbours } from "./Game";
 
 const { RED: R, GREEN: G, BLUE: B } = Color;
 
@@ -64,6 +64,39 @@ describe("Initializing game", () => {
         "Invalid color"
       );
     });
+  });
+});
+
+describe("getConnectedNeighbours for a 4 x 4 grid", () => {
+  /* 
+    NOTE: order of returned indexes is top, right, bottom, left
+    
+    Reference indexes for a 4 x 4 grid    
+        0 , 1 , 2 , 3 ,
+        4 , 5 , 6 , 7 ,
+        8 , 9 , 10, 11,
+        12, 13, 14, 15    
+  */
+  const DIMENSION = 4;
+  it("should return correct neighbours for TOP-LEFT tile", () => {
+    const neighbourIndexes = getConnectedNeighbours(0, DIMENSION);
+    expect(neighbourIndexes).toEqual([1, 4]);
+  });
+  it("should return correct neighbours for BOTTOM-LEFT tile", () => {
+    const neighbourIndexes = getConnectedNeighbours(12, DIMENSION);
+    expect(neighbourIndexes).toEqual([8, 13]);
+  });
+  it("should return correct neighbours for BOTTOM-RIGHT tile", () => {
+    const neighbourIndexes = getConnectedNeighbours(15, DIMENSION);
+    expect(neighbourIndexes).toEqual([11, 14]);
+  });
+  it("should return correct neighbours for TOP-RIGHT tile", () => {
+    const neighbourIndexes = getConnectedNeighbours(3, DIMENSION);
+    expect(neighbourIndexes).toEqual([7, 2]);
+  });
+  it("should return correct neighbours for the middle (6) tile", () => {
+    const neighbourIndexes = getConnectedNeighbours(6, DIMENSION);
+    expect(neighbourIndexes).toEqual([2, 7, 10, 5]);
   });
 });
 

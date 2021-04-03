@@ -1,4 +1,4 @@
-import { Color, colors } from "./Game";
+import { Color, colors, getConnectedNeighbours } from "./Game";
 
 function getLeft(currentIndex: number, dimension: number) {
   // if first column
@@ -46,7 +46,7 @@ function calculateNextMove(grid: Array<Color>, dimension: number): Color {
   }));
 
   const originColor = grid[0];
-  countByColorOfConnectedTiles(
+  traverseConnectedTiles(
     visistedGrid,
     colorCountMap,
     0,
@@ -67,7 +67,15 @@ function calculateNextMove(grid: Array<Color>, dimension: number): Color {
   return selectedColor;
 }
 
-function countByColorOfConnectedTiles(
+/* 
+  To DFS to traverse all tiles connected to the origin.
+  In case we find a different color tile connected to the origin, we 
+  calculate all tiles connected to this tile.
+  That way for each non-origin color we count tiles directly connected 
+  to the origin. E.g. if origin color is green, we calculate count of 
+  blue and red tiles that are directly connected to the origin.
+*/
+function traverseConnectedTiles(
   grid: Array<{ color: Color; visited: boolean }>,
   colorCountMap: Map<Color, { count: number }>,
   currentIndex: number,
@@ -84,49 +92,16 @@ function countByColorOfConnectedTiles(
   if (tile.color === originColor) {
     tile.visited = true;
 
-    const topIndex = getTop(currentIndex, dimension);
-    if (topIndex != null) {
-      countByColorOfConnectedTiles(
+    const neighbourIndexes = getConnectedNeighbours(currentIndex, dimension);
+    neighbourIndexes.forEach((neighbourIndex) =>
+      traverseConnectedTiles(
         grid,
         colorCountMap,
-        topIndex,
+        neighbourIndex,
         originColor,
         dimension
-      );
-    }
-
-    const rightIndex = getRight(currentIndex, dimension);
-    if (rightIndex != null) {
-      countByColorOfConnectedTiles(
-        grid,
-        colorCountMap,
-        rightIndex,
-        originColor,
-        dimension
-      );
-    }
-
-    const bottomIndex = getBottom(currentIndex, dimension);
-    if (bottomIndex != null) {
-      countByColorOfConnectedTiles(
-        grid,
-        colorCountMap,
-        bottomIndex,
-        originColor,
-        dimension
-      );
-    }
-
-    const leftIndex = getLeft(currentIndex, dimension);
-    if (leftIndex != null) {
-      countByColorOfConnectedTiles(
-        grid,
-        colorCountMap,
-        leftIndex,
-        originColor,
-        dimension
-      );
-    }
+      )
+    );
   } else {
     // if different color find only same color connected components
     if (!colorCountMap.has(tile.color)) {
@@ -134,13 +109,19 @@ function countByColorOfConnectedTiles(
     }
 
     const countObj = colorCountMap.get(tile.color)!;
-    computeCcCount(grid, tile.color, currentIndex, countObj, dimension);
+    countConnectedTilesForColor(
+      tile.color,
+      grid,
+      currentIndex,
+      countObj,
+      dimension
+    );
   }
 }
 
-function computeCcCount(
-  grid: Array<{ color: Color; visited: boolean }>,
+function countConnectedTilesForColor(
   color: Color,
+  grid: Array<{ color: Color; visited: boolean }>,
   currentIndex: number,
   countObj: { count: number },
   dimension: number
@@ -161,25 +142,16 @@ function computeCcCount(
   // increment count for this tile
   countObj.count++;
   //  check each neighbour for same color and increment count
-  const topIndex = getTop(currentIndex, dimension);
-  if (topIndex != null) {
-    computeCcCount(grid, color, topIndex, countObj, dimension);
-  }
-
-  const rightIndex = getRight(currentIndex, dimension);
-  if (rightIndex != null) {
-    computeCcCount(grid, color, rightIndex, countObj, dimension);
-  }
-
-  const bottomIndex = getBottom(currentIndex, dimension);
-  if (bottomIndex != null) {
-    computeCcCount(grid, color, bottomIndex, countObj, dimension);
-  }
-
-  const leftIndex = getLeft(currentIndex, dimension);
-  if (leftIndex != null) {
-    computeCcCount(grid, color, leftIndex, countObj, dimension);
-  }
+  const neighbourIndexes = getConnectedNeighbours(currentIndex, dimension);
+  neighbourIndexes.forEach((neighbourIndex) =>
+    countConnectedTilesForColor(
+      color,
+      grid,
+      neighbourIndex,
+      countObj,
+      dimension
+    )
+  );
 }
 
 export const AiPlayer = {

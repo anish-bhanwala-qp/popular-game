@@ -1,10 +1,10 @@
-export enum Color {
+enum Color {
   RED = "r",
   GREEN = "g",
   BLUE = "b",
 }
 
-export const colors = Object.values(Color);
+const colors = Object.values(Color);
 
 type Grid = Array<Color>;
 
@@ -63,7 +63,7 @@ function validateGrid(grid: Grid, dimension: number) {
         1. Maybe save game state to db and restore/resume it.
         2. Allows testing with predefined game state.
 */
-export const GameFactory = {
+const GameFactory = {
   withDimension(dimension: number) {
     validateDimension(dimension);
     const grid = initGrid(dimension);
@@ -100,7 +100,19 @@ function changeColor(
   // flip the color
   grid[currentIndex] = newColor;
 
-  const topIndex = getTop(currentIndex, dimension);
+  const neighbourIndexes = getConnectedNeighbours(currentIndex, dimension);
+  neighbourIndexes.forEach((neighbourIndex) =>
+    changeColor(
+      grid,
+      visitedGrid,
+      oldColor,
+      newColor,
+      neighbourIndex,
+      dimension
+    )
+  );
+
+  /* const topIndex = getTop(currentIndex, dimension);
   if (topIndex != null) {
     changeColor(grid, visitedGrid, oldColor, newColor, topIndex, dimension);
   }
@@ -118,7 +130,7 @@ function changeColor(
   const leftIndex = getLeft(currentIndex, dimension);
   if (leftIndex != null) {
     changeColor(grid, visitedGrid, oldColor, newColor, leftIndex, dimension);
-  }
+  } */
 }
 
 class Game {
@@ -175,6 +187,40 @@ class Game {
   }
 }
 
+/* 
+    Calculates connected neighbours for given index in a grid.
+    Neighbour here means directly connected tiles to north, east, south and west.
+    It doesn't incluce diagonal neighbours.
+    @param {Number} index - The index of the current tile.
+    @param {Number} dimension - The dimension of the grid. E.g. 
+        for 4 x 4 grid dimension is 4.
+    @returns {Array<Number>} Returns array indexes of all immediate neighbours.
+*/
+function getConnectedNeighbours(index: number, dimension: number) {
+  const neighbourIndexes = [];
+  const topIndex = getTop(index, dimension);
+  if (topIndex != null) {
+    neighbourIndexes.push(topIndex);
+  }
+
+  const rightIndex = getRight(index, dimension);
+  if (rightIndex != null) {
+    neighbourIndexes.push(rightIndex);
+  }
+
+  const bottomIndex = getBottom(index, dimension);
+  if (bottomIndex != null) {
+    neighbourIndexes.push(bottomIndex);
+  }
+
+  const leftIndex = getLeft(index, dimension);
+  if (leftIndex != null) {
+    neighbourIndexes.push(leftIndex);
+  }
+
+  return neighbourIndexes;
+}
+
 function getLeft(currentIndex: number, dimension: number) {
   // if first column
   if (currentIndex % dimension === 0) {
@@ -211,3 +257,5 @@ function getTop(currentIndex: number, dimension: number) {
 
   return currentIndex - dimension;
 }
+
+export { Color, colors, GameFactory, getConnectedNeighbours };
