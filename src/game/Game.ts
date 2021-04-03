@@ -34,16 +34,34 @@ function validateDimension(dimension: number) {
   }
 }
 
+function validateGrid(grid: Grid, dimension: number) {
+  const expectedGridLength = dimension * dimension;
+  if (grid.length !== expectedGridLength) {
+    throw new Error(
+      `The grid length must be ${expectedGridLength} but was ${grid.length}`
+    );
+  }
+
+  const invalidColor = grid.find(
+    (color) => colors.find((c) => c === color) == null
+  );
+  if (invalidColor) {
+    throw new Error(
+      `Invalid color value. It is ${invalidColor} but must be one of ${colors}`
+    );
+  }
+}
+
 /* 
     There are two constructor functions
     - withDimension
-    This method allows to auto create grid an initialize
-    the tiles with randomly picked colors.
+        This method allows to auto create grid an initialize
+        the tiles with randomly picked colors.
     - withGrid
-    This method allows to create a game with already
-    initialized grid with colors. There are two use cases for this:
-    1. Maybe save game state to db and restore/resume it.
-    2. Allows testing with predefined game state.
+        This method allows to create a game with already
+        initialized grid with colors. There are two use cases for this:
+        1. Maybe save game state to db and restore/resume it.
+        2. Allows testing with predefined game state.
 */
 export const GameFactory = {
   withDimension(dimension: number) {
@@ -52,6 +70,8 @@ export const GameFactory = {
     return new Game(grid, dimension);
   },
   withGrid(grid: Grid, dimension: number) {
+    validateDimension(dimension);
+    validateGrid(grid, dimension);
     return new Game(grid, dimension);
   },
 };

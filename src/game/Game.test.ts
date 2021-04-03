@@ -1,12 +1,12 @@
-import { Color, GameFactory } from "./Game";
+import { Color, colors, GameFactory } from "./Game";
 
 const { RED: R, GREEN: G, BLUE: B } = Color;
 
-/* describe("Initializing game", () => {
+describe("Initializing game", () => {
   describe("Initialize game with given dimension", () => {
     it("should initialize grid with a valid dimension", () => {
       const game = GameFactory.withDimension(10);
-      expect(game.gridSize()).toBe(100);
+      expect(game.gridClone().length).toBe(100);
     });
 
     it("should throw error if dimension is less than 2", () => {
@@ -31,12 +31,12 @@ const { RED: R, GREEN: G, BLUE: B } = Color;
       const game = GameFactory.withDimension(5);
 
       let totalMatches = 0;
-      for (const value of game) {
-        expect(value.color).toMatch(/r|g|b/g);
+      for (const color of game.gridClone()) {
+        expect(colors.find((c) => c === color)).toBeTruthy();
         totalMatches++;
       }
 
-      // This is to ensure iterator actually ran
+      // This is to ensure all slots were checked
       expect(totalMatches).toBe(25);
     });
   });
@@ -44,31 +44,28 @@ const { RED: R, GREEN: G, BLUE: B } = Color;
   describe("initialize game with already initialized grid", () => {
     it("should throw error if grid rows are less than 2", () => {
       // Only one row
-      const invalidGridRows = [[R, B]];
-      expect(() => GameFactory.withGrid(invalidGridRows)).toThrowError(
-        "The grid dimension must be an integer between"
+      const invalidGridRows = [R, B];
+      expect(() => GameFactory.withGrid(invalidGridRows, 2)).toThrowError(
+        "The grid length must be"
       );
     });
 
     it("should throw error when any row has columns not matching the row count", () => {
       // Intead of 4 tiles (2 x 2 grid) it has only 3 tiles
-      const invalidGrid = [[R, B], [G]];
-      expect(() => GameFactory.withGrid(invalidGrid)).toThrowError(
-        "The grid is invalid. The column count should be"
+      const invalidGrid = [R, B, G];
+      expect(() => GameFactory.withGrid(invalidGrid, 2)).toThrowError(
+        "The grid length must be"
       );
     });
 
     it("should throw error when any tile has invalid color", () => {
-      const invalidGrid = [
-        [R, B],
-        [G, "invalid color"],
-      ] as any;
-      expect(() => GameFactory.withGrid(invalidGrid)).toThrowError(
+      const invalidGrid = [R, B, G, "invalid color"] as any;
+      expect(() => GameFactory.withGrid(invalidGrid, 2)).toThrowError(
         "Invalid color"
       );
     });
   });
-}); */
+});
 
 describe("Making moves", () => {
   describe("Game over detection", () => {

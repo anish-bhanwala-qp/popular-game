@@ -1,4 +1,4 @@
-import { automatedMove } from "./automatedMove";
+import { AiPlayer } from "./AiPlayer";
 import { Color } from "./Game";
 
 const { RED: R, GREEN: G, BLUE: B } = Color;
@@ -13,7 +13,7 @@ describe("Automated move", () => {
         R, G, R, G
     ];
 
-    const nextColor = automatedMove(input, 4);
+    const nextColor = AiPlayer.calculateNextMove(input, 4);
 
     expect(nextColor).toEqual(G);
   });
@@ -28,7 +28,7 @@ describe("Automated move", () => {
         G, G, B, G
     ];
 
-    const nextColor = automatedMove(input, 4);
+    const nextColor = AiPlayer.calculateNextMove(input, 4);
 
     expect(nextColor).toEqual(B);
   });

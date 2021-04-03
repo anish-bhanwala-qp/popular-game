@@ -38,7 +38,7 @@ function getTop(currentIndex: number, dimension: number) {
 }
 
 // lets find all connected componnets first
-export function automatedMove(grid: Array<Color>, dimension: number): Color {
+function calculateNextMove(grid: Array<Color>, dimension: number): Color {
   const colorCountMap = new Map<Color, { count: number }>();
   const visistedGrid = grid.map((color) => ({
     color,
@@ -182,3 +182,7 @@ function computeCcCount(
     computeCcCount(grid, color, leftIndex, countObj, dimension);
   }
 }
+
+export const AiPlayer = {
+  calculateNextMove,
+};
