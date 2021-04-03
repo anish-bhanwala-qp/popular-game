@@ -9,6 +9,7 @@ function App() {
   const [serverError, setServerError] = useState("");
   const [grid, setGrid] = useState<Grid>([]);
   const [colors, setColors] = useState<Array<Color>>([]);
+  const [dimension, setDimension] = useState<number>(1);
 
   useEffect(() => {
     fetch("/api/game/init", {
@@ -28,6 +29,7 @@ function App() {
             const data = res as ServerResponse;
             setGrid([...data.grid]);
             setColors([...data.colors]);
+            setDimension(data.dimension);
           });
         }
       })
@@ -44,8 +46,8 @@ function App() {
   } else {
     content = (
       <div>
-        <GridLayout grid={grid} />
-        <ColorPicker colors={colors} />
+        <GridLayout grid={grid} dimension={dimension} />
+        <ColorPicker originColorId={grid[0]} colors={colors} />
       </div>
     );
   }

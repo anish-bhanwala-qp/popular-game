@@ -10,4 +10,5 @@ export type Grid = Array<ColorId>;
 export interface ServerResponse {
   grid: Grid;
   colors: Array<Color>;
+  dimension: number;
 }

@@ -24,7 +24,10 @@ it("should load app properly on first load", async () => {
   // all three colors should be displayed
   screen.getByRole("button", { name: "green" });
   screen.getByRole("button", { name: "blue" });
-  screen.getByRole("button", { name: "red" });
+  const redBtn = screen.getByRole("button", { name: "red" });
+
+  // The red button should be disabled as this is the origin color
+  expect(redBtn).toBeDisabled();
 });
 
 it("On server error error message is displayed", async () => {

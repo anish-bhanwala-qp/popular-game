@@ -18,6 +18,7 @@ export const handlers = [
           { id: "g", color: "green" },
           { id: "b", color: "blue" },
         ],
+        dimension: 4,
       })
     );
   }),
