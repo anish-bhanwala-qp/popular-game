@@ -13,6 +13,11 @@ export const handlers = [
               'r', 'g', 'b', 'r', 
               'r', 'g', 'b', 'r'
             ],
+        colors: [
+          { id: "r", color: "red" },
+          { id: "g", color: "green" },
+          { id: "b", color: "blue" },
+        ],
       })
     );
   }),

@@ -1,18 +1,14 @@
 import React, { useEffect, useState } from "react";
 import "./App.css";
-
-type Color = "r" | "g" | "b";
-
-type Grid = Array<Color>;
-
-interface ServerResponse {
-  grid: Grid;
-}
+import { ColorPicker } from "./ColorPicker";
+import { GridLayout } from "./GridLayout";
+import { Color, Grid, ServerResponse } from "./models";
 
 function App() {
   const [loading, setLoading] = useState(true);
   const [serverError, setServerError] = useState("");
   const [grid, setGrid] = useState<Grid>([]);
+  const [colors, setColors] = useState<Array<Color>>([]);
 
   useEffect(() => {
     fetch("/api/game/init", {
@@ -31,6 +27,7 @@ function App() {
           res.json().then((res) => {
             const data = res as ServerResponse;
             setGrid([...data.grid]);
+            setColors([...data.colors]);
           });
         }
       })
@@ -47,11 +44,8 @@ function App() {
   } else {
     content = (
       <div>
-        {grid.map((c, index) => (
-          <span key={index} data-testid="tile">
-            {c}
-          </span>
-        ))}
+        <GridLayout grid={grid} />
+        <ColorPicker colors={colors} />
       </div>
     );
   }

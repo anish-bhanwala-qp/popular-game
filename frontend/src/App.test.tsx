@@ -19,7 +19,12 @@ it("should load app properly on first load", async () => {
 
   // on successful server response grid should be displayed
   const tiles = await screen.findAllByTestId("tile");
-  expect(tiles.length).toBe(16);
+  expect(tiles).toHaveLength(16);
+
+  // all three colors should be displayed
+  screen.getByRole("button", { name: "green" });
+  screen.getByRole("button", { name: "blue" });
+  screen.getByRole("button", { name: "red" });
 });
 
 it("On server error error message is displayed", async () => {
