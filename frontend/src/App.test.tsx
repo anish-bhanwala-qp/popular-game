@@ -64,3 +64,34 @@ it("should update the board with new colors when a color is picked", async () =>
   // The new layout should have 8 green color tiles
   expect(greenTiles).toHaveLength(8);
 });
+
+it("should display congrats message with move history when game is over", async () => {
+  render(<App />);
+
+  // wait for green color picker to be loaded
+  const greenBtn = await screen.findByRole("button", { name: "green" });
+
+  server.resetHandlers(
+    rest.put("/api/game/next-move", (req, res, ctx) => {
+      return res(
+        ctx.status(200),
+        ctx.json({
+          grid: [],
+          gameOver: true,
+          moveHistory: ["g", "r", "b"],
+          aiMoveHistory: ["b", "g"],
+        })
+      );
+    })
+  );
+
+  userEvent.click(greenBtn);
+
+  await screen.findByRole("heading", {
+    name: "Congratulations you won!",
+  });
+
+  // The move count for both real and ai player should be displayed
+  screen.getByRole("heading", { name: "You took 3 moves." });
+  screen.getByRole("heading", { name: "AI took 2 moves." });
+});

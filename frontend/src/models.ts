@@ -7,7 +7,14 @@ export interface Color {
 
 export type Grid = Array<ColorId>;
 
-export interface ServerResponse {
+export interface NextMoveServerResponse {
+  grid: Grid;
+  gameOver: boolean;
+  moveHistory?: Array<ColorId>;
+  aiMoveHistory?: Array<ColorId>;
+}
+
+export interface InitServerResponse {
   grid: Grid;
   colors: Array<Color>;
   dimension: number;

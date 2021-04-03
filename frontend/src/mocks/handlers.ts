@@ -22,7 +22,7 @@ export const handlers = [
       })
     );
   }),
-  rest.put("/api/game/make-move", (req, res, ctx) => {
+  rest.put("/api/game/next-move", (req, res, ctx) => {
     return res(
       ctx.status(200),
 

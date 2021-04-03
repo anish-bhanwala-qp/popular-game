@@ -1,8 +1,15 @@
 import React, { useEffect, useState } from "react";
 import "./App.css";
 import { ColorPicker } from "./ColorPicker";
+import { GameOver } from "./GameOver";
 import { GridLayout } from "./GridLayout";
-import { Color, ColorId, Grid, ServerResponse } from "./models";
+import {
+  Color,
+  ColorId,
+  Grid,
+  InitServerResponse,
+  NextMoveServerResponse,
+} from "./models";
 
 const httpHeaders = {
   "Content-type": "application/json",
@@ -15,18 +22,26 @@ function App() {
   const [grid, setGrid] = useState<Grid>([]);
   const [colors, setColors] = useState<Array<Color>>([]);
   const [dimension, setDimension] = useState<number>(1);
+  const [gameOver, setGameOver] = useState(false);
+  const [moveHistory, setMoveHistory] = useState<Array<ColorId>>([]);
+  const [aiMoveHistory, setAiMoveHistory] = useState<Array<ColorId>>([]);
 
   const colorPickedHandler = (colorId: ColorId) => {
     setLoading(true);
 
-    fetch("/api/game/make-move", {
+    fetch("/api/game/next-move", {
       method: "PUT",
       headers: httpHeaders,
       body: JSON.stringify({ colorId }),
     })
       .then((res) => res.json())
-      .then((data: { grid: Grid }) => {
+      .then((data: NextMoveServerResponse) => {
         setGrid([...data.grid]);
+        setGameOver(data.gameOver);
+        if (data.moveHistory && data.aiMoveHistory) {
+          setMoveHistory([...data.moveHistory]);
+          setAiMoveHistory([...data.aiMoveHistory]);
+        }
 
         setLoading(false);
       });
@@ -44,7 +59,7 @@ function App() {
           );
         } else {
           res.json().then((res) => {
-            const data = res as ServerResponse;
+            const data = res as InitServerResponse;
             setGrid([...data.grid]);
             setColors([...data.colors]);
             setDimension(data.dimension);
@@ -59,10 +74,15 @@ function App() {
   let content = null;
   if (serverError) {
     content = <span>{serverError}</span>;
+  } else if (gameOver) {
+    content = (
+      <GameOver moveHistory={moveHistory} aiMoveHistory={aiMoveHistory} />
+    );
   } else {
     content = (
       <div>
         <GridLayout grid={grid} dimension={dimension} colors={colors} />
+
         <ColorPicker
           originColorId={grid[0]}
           colors={colors}
