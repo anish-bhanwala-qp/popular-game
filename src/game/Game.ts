@@ -103,6 +103,7 @@ function changeColor(
 
 class Game {
   private moves: Array<Color> = [];
+  private gameOver: boolean = false;
   constructor(private grid: Grid, private dimension: number) {}
 
   gridClone() {
@@ -114,6 +115,10 @@ class Game {
   }
 
   move(newColor: Color) {
+    if (this.gameOver) {
+      return;
+    }
+
     const originColor = this.grid[0];
     // No change in color, ignore
     if (newColor === originColor) {
@@ -132,6 +137,21 @@ class Game {
       0,
       this.dimension
     );
+
+    this.checkGameOver();
+  }
+
+  private checkGameOver() {
+    if (this.gameOver) {
+      return;
+    }
+
+    const originColor = this.grid[0];
+    this.gameOver = this.grid.find((c) => c !== originColor) == null;
+  }
+
+  isGameOver() {
+    return this.gameOver;
   }
 }
 

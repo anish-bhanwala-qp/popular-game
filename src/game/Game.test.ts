@@ -70,7 +70,56 @@ const { RED: R, GREEN: G, BLUE: B } = Color;
   });
 }); */
 
-describe("Change Origin color", () => {
+describe("Making moves", () => {
+  describe("Game over detection", () => {
+    it("should return false when game is not over (all tiles are not of same color) yet after a move", () => {
+      // prettier-ignore
+      const input = [
+        R, G, G, B,
+        R, R, R, G,
+        R, B, G, R,
+        R, R, G, G
+    ];
+
+      const game = GameFactory.withGrid(input, 4);
+      game.move(B);
+      expect(game.isGameOver()).toBeFalsy();
+    });
+
+    it("should return true when game is over (all tiles are of same color)", () => {
+      // prettier-ignore
+      const input = [
+        R, R, R, B,
+        R, R, R, R,
+        R, B, R, R,
+        R, R, R, R
+    ];
+
+      const game = GameFactory.withGrid(input, 4);
+      game.move(B);
+
+      expect(game.isGameOver()).toBeTruthy();
+    });
+
+    it("should ignore move when game is already over", () => {
+      // prettier-ignore
+      const input = [
+          R, R, R, B,
+          R, R, R, R,
+          R, B, R, R,
+          R, R, R, R
+      ];
+
+      const game = GameFactory.withGrid(input, 4);
+      game.move(B);
+      expect(game.isGameOver()).toBeTruthy();
+      const moveCount = game.moveCount();
+
+      game.move(R);
+      expect(game.moveCount()).toBe(moveCount);
+    });
+  });
+
   it("should increment the move count for valid move", () => {
     // prettier-ignore
     const input = [
@@ -141,6 +190,29 @@ describe("Change Origin color", () => {
 
     const game = GameFactory.withGrid(expected, 4);
     game.move(R);
+
+    expect(game.gridClone()).toEqual(expected);
+  });
+
+  it("should not flip color for diagonal neighbours", () => {
+    // The bottom row has two Red tiles that are diagonally connected
+    // prettier-ignore
+    const input = [
+        R, R, G, G,
+        R, R, G, G,
+        G, R, G, G,
+        R, G, R, G
+    ];
+    // prettier-ignore
+    const expected = [
+        B, B, G, G,
+        B, B, G, G,
+        G, B, G, G,
+        R, G, R, G
+    ];
+
+    const game = GameFactory.withGrid(input, 4);
+    game.move(B);
 
     expect(game.gridClone()).toEqual(expected);
   });
