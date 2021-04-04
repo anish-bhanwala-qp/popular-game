@@ -22,7 +22,7 @@ function App() {
   const [grid, setGrid] = useState<Grid>([]);
   const [colors, setColors] = useState<Array<Color>>([]);
   const [dimension, setDimension] = useState<number>(1);
-  const [gameOver, setGameOver] = useState(false);
+  const [isGameOver, setIsGameOver] = useState(false);
   const [moveHistory, setMoveHistory] = useState<Array<ColorId>>([]);
   const [aiMoveHistory, setAiMoveHistory] = useState<Array<ColorId>>([]);
 
@@ -32,12 +32,12 @@ function App() {
     fetch("/api/game/next-move", {
       method: "PUT",
       headers: httpHeaders,
-      body: JSON.stringify({ colorId }),
+      body: JSON.stringify({ color: colorId }),
     })
       .then((res) => res.json())
       .then((data: NextMoveServerResponse) => {
         setGrid([...data.grid]);
-        setGameOver(data.gameOver);
+        setIsGameOver(data.isGameOver);
         if (data.moveHistory && data.aiMoveHistory) {
           setMoveHistory([...data.moveHistory]);
           setAiMoveHistory([...data.aiMoveHistory]);
@@ -48,7 +48,7 @@ function App() {
   };
 
   useEffect(() => {
-    fetch("/api/game/init", {
+    fetch("/api/game/start", {
       headers: httpHeaders,
     })
       .then((res) => {
@@ -74,7 +74,7 @@ function App() {
   let content = null;
   if (serverError) {
     content = <span>{serverError}</span>;
-  } else if (gameOver) {
+  } else if (isGameOver) {
     content = (
       <GameOver moveHistory={moveHistory} aiMoveHistory={aiMoveHistory} />
     );

@@ -1,4 +1,5 @@
 import { Color, Grid } from "./models";
+import styles from "./GridLayout.module.css";
 
 export function GridLayout(props: {
   grid: Grid;
@@ -16,7 +17,7 @@ export function GridLayout(props: {
 
           // group items (spans) for one row in a div
           return (
-            <div className="grid-row" key={rowIndex}>
+            <div className={styles.gridRow} key={rowIndex}>
               {rowItems.map((color, index) => {
                 const backgroundColor = colors.find((c) => c.id === color)
                   ?.color;
@@ -24,6 +25,7 @@ export function GridLayout(props: {
                   <span
                     key={rowStartIndex + index}
                     data-testid="tile"
+                    className={styles.gridColumn}
                     style={{
                       backgroundColor,
                     }}

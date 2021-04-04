@@ -1,4 +1,4 @@
-import { Color, GameFactory, IGame } from "./game/Game";
+import { Color, colorMapping, GameFactory, IGame } from "./game/Game";
 
 let activeGame: IGame | null = null;
 
@@ -7,6 +7,7 @@ function convertToGameDto(game: IGame) {
     grid: game.gridClone(),
     dimension: game.getDimension(),
     isGameOver: game.isGameOver(),
+    colors: colorMapping,
   };
 }
 

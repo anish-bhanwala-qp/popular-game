@@ -1,4 +1,3 @@
-import express from "express";
 import { app } from "./App";
 
 const port = 5000;

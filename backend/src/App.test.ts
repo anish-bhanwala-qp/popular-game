@@ -39,6 +39,11 @@ describe("App routes", () => {
       const body = res.body;
       expect(body.isGameOver).toBe(false);
     });
+
+    it("should return colors array", async () => {
+      const body = res.body;
+      expect(body.colors).toHaveLength(3);
+    });
   });
 
   describe("Calling next move with invalid colors", () => {

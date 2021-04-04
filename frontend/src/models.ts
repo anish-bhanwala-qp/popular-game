@@ -9,7 +9,7 @@ export type Grid = Array<ColorId>;
 
 export interface NextMoveServerResponse {
   grid: Grid;
-  gameOver: boolean;
+  isGameOver: boolean;
   moveHistory?: Array<ColorId>;
   aiMoveHistory?: Array<ColorId>;
 }

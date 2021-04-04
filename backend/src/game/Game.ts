@@ -6,6 +6,12 @@ enum Color {
 
 const colors = Object.values(Color);
 
+const colorMapping = [
+  { id: Color.RED, color: "red" },
+  { id: Color.BLUE, color: "blue" },
+  { id: Color.GREEN, color: "green" },
+];
+
 type Grid = Array<Color>;
 
 interface IGame {
@@ -269,4 +275,11 @@ function getTop(currentIndex: number, dimension: number) {
   return currentIndex - dimension;
 }
 
-export { Color, IGame, colors, GameFactory, getConnectedNeighbours };
+export {
+  Color,
+  IGame,
+  colors,
+  colorMapping,
+  GameFactory,
+  getConnectedNeighbours,
+};

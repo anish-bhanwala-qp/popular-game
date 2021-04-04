@@ -33,7 +33,7 @@ it("should load app properly on first load", async () => {
 
 it("On server error error message is displayed", async () => {
   server.resetHandlers(
-    rest.get("/api/game/init", (req, res, ctx) => {
+    rest.get("/api/game/start", (req, res, ctx) => {
       return res(ctx.status(500));
     })
   );
@@ -77,7 +77,7 @@ it("should display congrats message with move history when game is over", async 
         ctx.status(200),
         ctx.json({
           grid: [],
-          gameOver: true,
+          isGameOver: true,
           moveHistory: ["g", "r", "b"],
           aiMoveHistory: ["b", "g"],
         })
