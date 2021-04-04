@@ -2,8 +2,10 @@ const COLORS = [
   { id: "r", color: "red" },
   { id: "g", color: "green" },
   { id: "b", color: "blue" },
+  { id: "o", color: "orange" },
 ];
-const DIMENSION = 5;
+
+const DIMENSION = 10;
 
 // simple check to avoid using duplicate ids by mistake
 (function validateUniqueIds() {
