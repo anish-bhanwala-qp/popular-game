@@ -92,6 +92,6 @@ it("should display congrats message with move history when game is over", async 
   });
 
   // The move count for both real and ai player should be displayed
-  screen.getByRole("heading", { name: "You took 3 moves." });
-  screen.getByRole("heading", { name: "AI took 2 moves." });
+  screen.getByRole("heading", { name: "You took 3 moves" });
+  screen.getByRole("heading", { name: "AI player took 2 moves" });
 });

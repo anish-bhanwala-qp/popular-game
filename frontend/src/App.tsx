@@ -16,6 +16,8 @@ const httpHeaders = {
   Accept: "application/json",
 };
 
+export const ColorsContext = React.createContext<Array<Color>>([]);
+
 function App() {
   const [loading, setLoading] = useState(true);
   const [serverError, setServerError] = useState("");
@@ -76,20 +78,15 @@ function App() {
     content = <span>{serverError}</span>;
   } else if (isGameOver) {
     content = (
-      <GameOver
-        colors={colors}
-        moveHistory={moveHistory}
-        aiMoveHistory={aiMoveHistory}
-      />
+      <GameOver moveHistory={moveHistory} aiMoveHistory={aiMoveHistory} />
     );
   } else {
     content = (
       <div>
-        <GridLayout grid={grid} dimension={dimension} colors={colors} />
+        <GridLayout grid={grid} dimension={dimension} />
 
         <ColorPicker
           originColorId={grid[0]}
-          colors={colors}
           onColorPicked={colorPickedHandler}
         />
       </div>
@@ -99,7 +96,7 @@ function App() {
   return (
     <div className="App">
       {loading && <div className="loading-overlay">Loading...</div>}
-      {content}
+      <ColorsContext.Provider value={colors}>{content}</ColorsContext.Provider>
     </div>
   );
 }

@@ -1,13 +1,13 @@
-import { Color, Grid } from "./models";
+import { Grid } from "./models";
 import styles from "./GridLayout.module.css";
 import { resolveColor } from "./util";
+import { useContext } from "react";
+import { ColorsContext } from "./App";
 
-export function GridLayout(props: {
-  grid: Grid;
-  dimension: number;
-  colors: Array<Color>;
-}) {
-  const { grid, dimension, colors } = props;
+export function GridLayout(props: { grid: Grid; dimension: number }) {
+  const { grid, dimension } = props;
+  const colors = useContext(ColorsContext);
+
   return (
     <div>
       {Array(dimension)

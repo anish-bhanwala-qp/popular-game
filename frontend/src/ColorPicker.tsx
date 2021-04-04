@@ -1,13 +1,16 @@
-import { Color, ColorId } from "./models";
+import { ColorId } from "./models";
 import styles from "./ColorPicker.module.css";
 import { resolveColor } from "./util";
+import { useContext } from "react";
+import { ColorsContext } from "./App";
 
 export function ColorPicker(props: {
   originColorId: ColorId;
-  colors: Array<Color>;
   onColorPicked: (color: ColorId) => void;
 }) {
-  const { colors, originColorId, onColorPicked } = props;
+  const { originColorId, onColorPicked } = props;
+  const colors = useContext(ColorsContext);
+
   return (
     <div className={styles.container}>
       {colors.map((value) => (

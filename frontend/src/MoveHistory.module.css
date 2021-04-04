@@ -1,0 +1,12 @@
+.historyList {
+    list-style: none;
+    padding: 0;
+}
+
+.historyList li {
+    border: 1px solid #ccc;
+}
+
+.historyListHeading {
+    text-align: center;
+}
