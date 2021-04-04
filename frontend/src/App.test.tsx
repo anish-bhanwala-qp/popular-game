@@ -40,9 +40,7 @@ it("On server error error message is displayed", async () => {
 
   render(<App />);
   // wait for error message
-  await screen.findByText(
-    "Oops an error occurred connecting to server. Please refresh."
-  );
+  await screen.findByText("Oops an error occurred on server. Please refresh.");
 });
 
 it("should update the board with new colors when a color is picked", async () => {

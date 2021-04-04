@@ -1,8 +1,8 @@
 import { Color, ColorId } from "./models";
 import { resolveColor } from "./util";
-import styles from "./MoveHistory.module.css";
+import styles from "./MoveHistoryList.module.css";
 
-export function MoveHistory(props: {
+export function MoveHistoryList(props: {
   heading: string;
   history: Array<ColorId>;
   colors: Array<Color>;

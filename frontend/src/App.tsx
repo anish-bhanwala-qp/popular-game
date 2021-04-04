@@ -10,11 +10,8 @@ import {
   InitServerResponse,
   NextMoveServerResponse,
 } from "./models";
-
-const httpHeaders = {
-  "Content-type": "application/json",
-  Accept: "application/json",
-};
+import { MoveHistoryOverview } from "./MoveHistoryOverview";
+import { apiCall } from "./util";
 
 export const ColorsContext = React.createContext<Array<Color>>([]);
 
@@ -31,12 +28,7 @@ function App() {
   const colorPickedHandler = (colorId: ColorId) => {
     setLoading(true);
 
-    fetch("/api/game/next-move", {
-      method: "PUT",
-      headers: httpHeaders,
-      body: JSON.stringify({ color: colorId }),
-    })
-      .then((res) => res.json())
+    apiCall("/api/game/next-move", "PUT", { color: colorId })
       .then((data: NextMoveServerResponse) => {
         setGrid([...data.grid]);
         setIsGameOver(data.isGameOver);
@@ -46,28 +38,23 @@ function App() {
         }
 
         setLoading(false);
-      });
+      })
+      .catch((_) =>
+        setServerError("Oops an error occurred on server. Please refresh")
+      );
   };
 
   useEffect(() => {
-    fetch("/api/game/start", {
-      headers: httpHeaders,
-    })
+    apiCall("/api/game/start")
       .then((res) => {
-        // Display error message
-        if (res.status !== 200) {
-          setServerError(
-            "Oops an error occurred connecting to server. Please refresh."
-          );
-        } else {
-          res.json().then((res) => {
-            const data = res as InitServerResponse;
-            setGrid([...data.grid]);
-            setColors([...data.colors]);
-            setDimension(data.dimension);
-          });
-        }
+        const data = res as InitServerResponse;
+        setGrid([...data.grid]);
+        setColors([...data.colors]);
+        setDimension(data.dimension);
       })
+      .catch(() =>
+        setServerError("Oops an error occurred on server. Please refresh.")
+      )
       .finally(() => {
         setLoading(false);
       });
@@ -88,6 +75,12 @@ function App() {
         <ColorPicker
           originColorId={grid[0]}
           onColorPicked={colorPickedHandler}
+        />
+
+        <MoveHistoryOverview
+          moveHistory={moveHistory}
+          aiMoveHistory={aiMoveHistory}
+          isGameOver={false}
         />
       </div>
     );
