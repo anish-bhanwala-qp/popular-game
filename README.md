@@ -4,6 +4,14 @@ Popular Game - The goal of the game is to change all the tiles to the same color
 # Instructions to play the game.
 1. First start the backend (instructions below).
 2. Next start the frontend (instructions below).
+3. On successful setup game will look like this:
+  ![Alt text](game-screeenshot.png?raw=true "Game screenshot")
+4. Once game is over just `refresh` the page to start a new game. 
+
+# Customize game colors and grid/board dimension
+The colors and grid/board dimension can be configured in the file [GameConfig.ts](backend/src/game/GameConfig.ts).  
+To add/edit colors modify the array `COLORS`. (There must be at least 2 colors).  
+To modify dimension modify the variable `DIMENSION`. (The dimension must be between 2 to 10).  
 
 
 # Backend
