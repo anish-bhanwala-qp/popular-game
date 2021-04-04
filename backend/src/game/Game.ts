@@ -12,6 +12,7 @@ interface IGame {
   gridClone(): Grid;
   getDimension(): number;
   isGameOver(): boolean;
+  nextMove(color: Color): void;
 }
 
 const MIN_DIMENSION = 2;
@@ -156,7 +157,7 @@ class Game implements IGame {
     return this.moves.length;
   }
 
-  move(newColor: Color) {
+  nextMove(newColor: Color) {
     if (this.gameOver) {
       return;
     }

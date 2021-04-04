@@ -112,7 +112,7 @@ describe("Making moves", () => {
     ];
 
       const game = GameFactory.withGrid(input, 4);
-      game.move(B);
+      game.nextMove(B);
       expect(game.isGameOver()).toBeFalsy();
     });
 
@@ -126,7 +126,7 @@ describe("Making moves", () => {
     ];
 
       const game = GameFactory.withGrid(input, 4);
-      game.move(B);
+      game.nextMove(B);
 
       expect(game.isGameOver()).toBeTruthy();
     });
@@ -141,11 +141,11 @@ describe("Making moves", () => {
       ];
 
       const game = GameFactory.withGrid(input, 4);
-      game.move(B);
+      game.nextMove(B);
       expect(game.isGameOver()).toBeTruthy();
       const moveCount = game.moveCount();
 
-      game.move(R);
+      game.nextMove(R);
       expect(game.moveCount()).toBe(moveCount);
     });
   });
@@ -160,9 +160,9 @@ describe("Making moves", () => {
     ];
 
     const game = GameFactory.withGrid(input, 4);
-    game.move(B);
+    game.nextMove(B);
     expect(game.moveCount()).toBe(1);
-    game.move(R);
+    game.nextMove(R);
     expect(game.moveCount()).toBe(2);
   });
 
@@ -177,7 +177,7 @@ describe("Making moves", () => {
 
     const game = GameFactory.withGrid(input, 4);
     // color is same as origin
-    game.move(R);
+    game.nextMove(R);
     expect(game.moveCount()).toBe(0);
   });
 
@@ -204,7 +204,7 @@ describe("Making moves", () => {
     ];
 
     const game = GameFactory.withGrid(input, 4);
-    game.move(B);
+    game.nextMove(B);
 
     expect(game.gridClone()).toEqual(expected);
   });
@@ -219,7 +219,7 @@ describe("Making moves", () => {
     ];
 
     const game = GameFactory.withGrid(expected, 4);
-    game.move(R);
+    game.nextMove(R);
 
     expect(game.gridClone()).toEqual(expected);
   });
@@ -242,7 +242,7 @@ describe("Making moves", () => {
     ];
 
     const game = GameFactory.withGrid(input, 4);
-    game.move(B);
+    game.nextMove(B);
 
     expect(game.gridClone()).toEqual(expected);
   });
