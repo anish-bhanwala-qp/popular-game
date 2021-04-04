@@ -6,7 +6,7 @@ describe("Initializing game", () => {
   describe("Initialize game with given dimension", () => {
     it("should initialize grid with a valid dimension", () => {
       const game = GameFactory.withDimension(10);
-      expect(game.gridClone().length).toBe(100);
+      expect(game.getGrid().length).toBe(100);
     });
 
     it("should throw error if dimension is less than 2", () => {
@@ -31,7 +31,7 @@ describe("Initializing game", () => {
       const game = GameFactory.withDimension(5);
 
       let totalMatches = 0;
-      for (const color of game.gridClone()) {
+      for (const color of game.getGrid()) {
         expect(colors.find((c) => c === color)).toBeTruthy();
         totalMatches++;
       }
@@ -162,8 +162,10 @@ describe("Making moves", () => {
     const game = GameFactory.withGrid(input, 4);
     game.nextMove(B);
     expect(game.moveCount()).toBe(1);
+    expect(game.getMoves()).toEqual([B]);
     game.nextMove(R);
     expect(game.moveCount()).toBe(2);
+    expect(game.getMoves()).toEqual([B, R]);
   });
 
   it("should not increment the move count when trying to make move without color change", () => {
@@ -206,7 +208,7 @@ describe("Making moves", () => {
     const game = GameFactory.withGrid(input, 4);
     game.nextMove(B);
 
-    expect(game.gridClone()).toEqual(expected);
+    expect(game.getGrid()).toEqual(expected);
   });
 
   it("should not make any changes if new color is same as origin", () => {
@@ -221,7 +223,7 @@ describe("Making moves", () => {
     const game = GameFactory.withGrid(expected, 4);
     game.nextMove(R);
 
-    expect(game.gridClone()).toEqual(expected);
+    expect(game.getGrid()).toEqual(expected);
   });
 
   it("should not change color for diagonal neighbours", () => {
@@ -244,6 +246,6 @@ describe("Making moves", () => {
     const game = GameFactory.withGrid(input, 4);
     game.nextMove(B);
 
-    expect(game.gridClone()).toEqual(expected);
+    expect(game.getGrid()).toEqual(expected);
   });
 });

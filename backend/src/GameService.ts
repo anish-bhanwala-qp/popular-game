@@ -1,33 +1,54 @@
+import { AiPlayer } from "./game/AiPlayer";
 import { Color, colorMapping, GameFactory, IGame } from "./game/Game";
 
-let activeGame: IGame | null = null;
+const DIMENSION = 5;
 
-function convertToGameDto(game: IGame) {
+let realPlayerGame: IGame | null = null;
+let aiPlayerGame: IGame | null = null;
+
+function convertToGameDto(realPlayerGame: IGame, aiPlayerGame: IGame) {
   return {
-    grid: game.gridClone(),
-    dimension: game.getDimension(),
-    isGameOver: game.isGameOver(),
+    grid: realPlayerGame.getGrid(),
+    dimension: realPlayerGame.getDimension(),
+    isGameOver: realPlayerGame.isGameOver(),
     colors: colorMapping,
+    moveHistory: realPlayerGame.getMoves(),
+    aiMoveHistory: aiPlayerGame.getMoves(),
   };
 }
 
 export const GameService = {
   start() {
-    activeGame = GameFactory.withDimension(10);
-    return convertToGameDto(activeGame);
+    realPlayerGame = GameFactory.withDimension(DIMENSION);
+    aiPlayerGame = GameFactory.withGrid(realPlayerGame.getGrid(), DIMENSION);
+
+    return convertToGameDto(realPlayerGame, aiPlayerGame);
   },
   nextMove(color: Color) {
-    if (!activeGame) {
+    if (!realPlayerGame) {
+      throw new Error("No game started yet");
+    }
+    if (!aiPlayerGame) {
       throw new Error("No game started yet");
     }
 
-    activeGame.nextMove(color);
-    return convertToGameDto(activeGame);
+    realPlayerGame.nextMove(color);
+
+    // Make AI move as well
+    if (!aiPlayerGame.isGameOver()) {
+      const nextColor = AiPlayer.calculateNextMove(
+        aiPlayerGame.getGrid(),
+        DIMENSION
+      );
+      aiPlayerGame.nextMove(nextColor);
+    }
+
+    return convertToGameDto(realPlayerGame, aiPlayerGame);
   },
   isGameInProgress() {
-    return activeGame != null;
+    return realPlayerGame != null;
   },
   cleanup() {
-    activeGame = null;
+    realPlayerGame = null;
   },
 };

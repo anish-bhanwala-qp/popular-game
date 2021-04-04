@@ -15,10 +15,11 @@ const colorMapping = [
 type Grid = Array<Color>;
 
 interface IGame {
-  gridClone(): Grid;
+  getGrid(): Grid;
   getDimension(): number;
   isGameOver(): boolean;
   nextMove(color: Color): void;
+  getMoves(): Array<Color>;
 }
 
 const MIN_DIMENSION = 2;
@@ -151,8 +152,12 @@ class Game implements IGame {
   private gameOver: boolean = false;
   constructor(private grid: Grid, private dimension: number) {}
 
-  gridClone() {
+  getGrid() {
     return this.grid.map((color) => color);
+  }
+
+  getMoves() {
+    return this.moves.map((c) => c);
   }
 
   getDimension() {

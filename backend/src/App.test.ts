@@ -1,6 +1,6 @@
 import request, { Response } from "supertest";
 import { app } from "./App";
-import { Color, colors } from "./game/Game";
+import { Color } from "./game/Game";
 import { GameService } from "./GameService";
 
 describe("App routes", () => {
@@ -94,6 +94,16 @@ describe("App routes", () => {
       const res = await sendNextMoveRequest();
       const body = res.body;
       expect(body.grid).toHaveLength(100);
+    });
+
+    it("should make the ai player move along with real player move", async () => {
+      // Make sure we start the game
+      GameService.start();
+
+      const res = await sendNextMoveRequest();
+      const body = res.body;
+      expect(body.moveHistory).toHaveLength(1);
+      expect(body.aiMoveHistory).toHaveLength(1);
     });
   });
 });

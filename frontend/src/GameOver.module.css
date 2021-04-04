@@ -1,0 +1,18 @@
+.history {
+    display: flex;
+    justify-content: space-between;
+    min-width: 300px;
+}
+
+.history ul {
+    list-style: none;
+    padding: 0;
+}
+
+.history ul li {
+    border: 1px solid #ccc;
+}
+
+.historyListHeading {
+    text-align: center;
+}
