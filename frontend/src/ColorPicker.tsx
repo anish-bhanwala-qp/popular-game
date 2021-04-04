@@ -1,4 +1,6 @@
 import { Color, ColorId } from "./models";
+import styles from "./ColorPicker.module.css";
+import { resolveColor } from "./util";
 
 export function ColorPicker(props: {
   originColorId: ColorId;
@@ -7,16 +9,18 @@ export function ColorPicker(props: {
 }) {
   const { colors, originColorId, onColorPicked } = props;
   return (
-    <div>
+    <div className={styles.container}>
       {colors.map((value) => (
         <button
+          className={styles.btn}
           key={value.id}
           disabled={originColorId === value.id}
           aria-label={value.color}
           onClick={() => onColorPicked(value.id)}
-        >
-          {value.color}
-        </button>
+          style={{
+            backgroundColor: resolveColor(value.id, colors),
+          }}
+        ></button>
       ))}
     </div>
   );

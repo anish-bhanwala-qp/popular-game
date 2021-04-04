@@ -1,11 +1,13 @@
-import { ColorId } from "./models";
+import { Color, ColorId } from "./models";
 import styles from "./GameOver.module.css";
+import { resolveColor } from "./util";
 
 export function GameOver(props: {
   moveHistory: Array<ColorId>;
   aiMoveHistory: Array<ColorId>;
+  colors: Array<Color>;
 }) {
-  const { moveHistory, aiMoveHistory } = props;
+  const { moveHistory, aiMoveHistory, colors } = props;
   return (
     <div>
       <h1>Congratulations you won!</h1>
@@ -16,7 +18,12 @@ export function GameOver(props: {
           </h4>
           <ul>
             {moveHistory.map((colorId, index) => (
-              <li key={index}>{colorId}</li>
+              <li
+                key={index}
+                style={{ backgroundColor: resolveColor(colorId, colors) }}
+              >
+                {colorId}
+              </li>
             ))}
           </ul>
         </div>
@@ -26,7 +33,12 @@ export function GameOver(props: {
           </h4>
           <ul>
             {aiMoveHistory.map((colorId, index) => (
-              <li key={index}>{colorId}</li>
+              <li
+                key={index}
+                style={{ backgroundColor: resolveColor(colorId, colors) }}
+              >
+                {colorId}
+              </li>
             ))}
           </ul>
         </div>

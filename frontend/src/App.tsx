@@ -76,7 +76,11 @@ function App() {
     content = <span>{serverError}</span>;
   } else if (isGameOver) {
     content = (
-      <GameOver moveHistory={moveHistory} aiMoveHistory={aiMoveHistory} />
+      <GameOver
+        colors={colors}
+        moveHistory={moveHistory}
+        aiMoveHistory={aiMoveHistory}
+      />
     );
   } else {
     content = (

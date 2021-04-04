@@ -1,0 +1,26 @@
+.container {
+    margin: 16px 0;
+}
+
+.btn {
+    padding: 16px;
+    border: 1px solid #ccc;
+    margin: 0 4px;
+    border-radius: 4px;
+}
+
+.btn:hover {
+    cursor: pointer;
+}
+
+.btn:hover,
+.btn:active {
+    outline: none;
+    transform: scale(0.98);
+}
+
+.btn:disabled {
+    opacity: 0.2;
+    cursor: not-allowed;
+    transform: scale(1);
+}
