@@ -8,6 +8,12 @@ const colors = Object.values(Color);
 
 type Grid = Array<Color>;
 
+interface IGame {
+  gridClone(): Grid;
+  getDimension(): number;
+  isGameOver(): boolean;
+}
+
 const MIN_DIMENSION = 2;
 const MAX_DIMENSION = 10;
 
@@ -133,13 +139,17 @@ function changeColor(
   } */
 }
 
-class Game {
+class Game implements IGame {
   private moves: Array<Color> = [];
   private gameOver: boolean = false;
   constructor(private grid: Grid, private dimension: number) {}
 
   gridClone() {
     return this.grid.map((color) => color);
+  }
+
+  getDimension() {
+    return this.dimension;
   }
 
   moveCount() {
@@ -258,4 +268,4 @@ function getTop(currentIndex: number, dimension: number) {
   return currentIndex - dimension;
 }
 
-export { Color, colors, GameFactory, getConnectedNeighbours };
+export { Color, IGame, colors, GameFactory, getConnectedNeighbours };
