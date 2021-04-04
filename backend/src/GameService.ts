@@ -1,7 +1,9 @@
 import { AiPlayer } from "./game/AiPlayer";
-import { Color, colorMapping, GameFactory, IGame } from "./game/Game";
+import { GameFactory, IGame } from "./game/Game";
+import { ColorId, GameConfig } from "./game/GameConfig";
 
-const DIMENSION = 5;
+const DIMENSION = GameConfig.getDimension();
+const COLORS = GameConfig.getColors();
 
 let realPlayerGame: IGame | null = null;
 let aiPlayerGame: IGame | null = null;
@@ -11,7 +13,7 @@ function convertToGameDto(realPlayerGame: IGame, aiPlayerGame: IGame) {
     grid: realPlayerGame.getGrid(),
     dimension: realPlayerGame.getDimension(),
     isGameOver: realPlayerGame.isGameOver(),
-    colors: colorMapping,
+    colors: COLORS,
     moveHistory: realPlayerGame.getMoves(),
     aiMoveHistory: aiPlayerGame.getMoves(),
   };
@@ -24,7 +26,7 @@ export const GameService = {
 
     return convertToGameDto(realPlayerGame, aiPlayerGame);
   },
-  nextMove(color: Color) {
+  nextMove(color: ColorId) {
     if (!realPlayerGame) {
       throw new Error("No game started yet");
     }

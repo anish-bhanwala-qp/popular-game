@@ -1,6 +1,8 @@
 import express, { NextFunction, Request, Response } from "express";
-import { colors } from "./game/Game";
+import { GameConfig } from "./game/GameConfig";
 import { GameService } from "./GameService";
+
+const COLORS = GameConfig.getColors();
 
 export const app = express();
 
@@ -20,7 +22,7 @@ app.put("/api/game/next-move", (req, res, next) => {
     return res.status(400).send({ message: "Please select a valid color" });
   }
   const { color } = req.body;
-  const isValidColor = colors.find((c) => color === c) != null;
+  const isValidColor = COLORS.find(({ id }) => color === id) != null;
   if (!isValidColor) {
     return res.status(400).send({ message: "Please select a valid color" });
   }

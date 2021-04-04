@@ -1,4 +1,7 @@
-import { Color, colors, getConnectedNeighbours } from "./Game";
+import { getConnectedNeighbours } from "./Game";
+import { ColorId, GameConfig } from "./GameConfig";
+
+const COLORS = GameConfig.getColors();
 
 function getLeft(currentIndex: number, dimension: number) {
   // if first column
@@ -38,33 +41,33 @@ function getTop(currentIndex: number, dimension: number) {
 }
 
 // lets find all connected componnets first
-function calculateNextMove(grid: Array<Color>, dimension: number): Color {
-  const colorCountMap = new Map<Color, { count: number }>();
-  const visistedGrid = grid.map((color) => ({
-    color,
+function calculateNextMove(grid: Array<ColorId>, dimension: number): ColorId {
+  const colorCountMap = new Map<ColorId, { count: number }>();
+  const visistedGrid = grid.map((colorId) => ({
+    colorId,
     visited: false,
   }));
 
-  const originColor = grid[0];
+  const originColorId = grid[0];
   traverseConnectedTiles(
     visistedGrid,
     colorCountMap,
     0,
-    originColor,
+    originColorId,
     dimension
   );
 
-  let selectedColor = colors.find((c) => c !== originColor)!;
+  let selectedColorId = COLORS.find(({ id }) => id !== originColorId)!.id;
   let maxCount = 0;
 
-  for (const [color, { count }] of colorCountMap) {
+  for (const [colorId, { count }] of colorCountMap) {
     if (count > maxCount) {
-      selectedColor = color;
+      selectedColorId = colorId;
       maxCount = count;
     }
   }
 
-  return selectedColor;
+  return selectedColorId;
 }
 
 /* 
@@ -76,10 +79,10 @@ function calculateNextMove(grid: Array<Color>, dimension: number): Color {
   blue and red tiles that are directly connected to the origin.
 */
 function traverseConnectedTiles(
-  grid: Array<{ color: Color; visited: boolean }>,
-  colorCountMap: Map<Color, { count: number }>,
+  grid: Array<{ colorId: ColorId; visited: boolean }>,
+  colorCountMap: Map<ColorId, { count: number }>,
   currentIndex: number,
-  originColor: Color,
+  originColorId: ColorId,
   dimension: number
 ) {
   const tile = grid[currentIndex];
@@ -89,7 +92,7 @@ function traverseConnectedTiles(
   }
 
   // check if top is same color, mark visited, continue
-  if (tile.color === originColor) {
+  if (tile.colorId === originColorId) {
     tile.visited = true;
 
     const neighbourIndexes = getConnectedNeighbours(currentIndex, dimension);
@@ -98,19 +101,19 @@ function traverseConnectedTiles(
         grid,
         colorCountMap,
         neighbourIndex,
-        originColor,
+        originColorId,
         dimension
       )
     );
   } else {
     // if different color find only same color connected components
-    if (!colorCountMap.has(tile.color)) {
-      colorCountMap.set(tile.color, { count: 0 });
+    if (!colorCountMap.has(tile.colorId)) {
+      colorCountMap.set(tile.colorId, { count: 0 });
     }
 
-    const countObj = colorCountMap.get(tile.color)!;
+    const countObj = colorCountMap.get(tile.colorId)!;
     countConnectedTilesForColor(
-      tile.color,
+      tile.colorId,
       grid,
       currentIndex,
       countObj,
@@ -120,8 +123,8 @@ function traverseConnectedTiles(
 }
 
 function countConnectedTilesForColor(
-  color: Color,
-  grid: Array<{ color: Color; visited: boolean }>,
+  colorId: ColorId,
+  grid: Array<{ colorId: ColorId; visited: boolean }>,
   currentIndex: number,
   countObj: { count: number },
   dimension: number
@@ -133,7 +136,7 @@ function countConnectedTilesForColor(
   }
 
   // if different color return
-  if (tile.color !== color) {
+  if (tile.colorId !== colorId) {
     return;
   }
 
@@ -145,7 +148,7 @@ function countConnectedTilesForColor(
   const neighbourIndexes = getConnectedNeighbours(currentIndex, dimension);
   neighbourIndexes.forEach((neighbourIndex) =>
     countConnectedTilesForColor(
-      color,
+      colorId,
       grid,
       neighbourIndex,
       countObj,

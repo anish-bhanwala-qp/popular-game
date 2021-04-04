@@ -1,39 +1,30 @@
-enum Color {
-  RED = "r",
-  GREEN = "g",
-  BLUE = "b",
-}
+import { ColorId, GameConfig } from "./GameConfig";
 
-const colors = Object.values(Color);
+const COLORS = GameConfig.getColors();
+const DIMENSION = GameConfig.getDimension();
 
-const colorMapping = [
-  { id: Color.RED, color: "red" },
-  { id: Color.BLUE, color: "blue" },
-  { id: Color.GREEN, color: "green" },
-];
-
-type Grid = Array<Color>;
+type Grid = Array<ColorId>;
 
 interface IGame {
   getGrid(): Grid;
   getDimension(): number;
   isGameOver(): boolean;
-  nextMove(color: Color): void;
-  getMoves(): Array<Color>;
+  nextMove(color: ColorId): void;
+  getMoves(): Array<ColorId>;
 }
 
 const MIN_DIMENSION = 2;
 const MAX_DIMENSION = 10;
 
-function randomColor() {
-  const index = Math.round(Math.random() * (colors.length - 1));
-  return colors[index];
+function randomColorId() {
+  const index = Math.round(Math.random() * (COLORS.length - 1));
+  return COLORS[index].id;
 }
 
 function initGrid(dimension: number) {
   const grid = new Array(dimension * dimension);
   for (let i = 0; i < grid.length; i++) {
-    grid[i] = randomColor();
+    grid[i] = randomColorId();
   }
 
   return grid;
@@ -57,11 +48,13 @@ function validateGrid(grid: Grid, dimension: number) {
   }
 
   const invalidColor = grid.find(
-    (color) => colors.find((c) => c === color) == null
+    (colorId) => COLORS.find(({ id }) => id === colorId) == null
   );
   if (invalidColor) {
     throw new Error(
-      `Invalid color value. It is ${invalidColor} but must be one of ${colors}`
+      `Invalid color value. It is ${invalidColor} but must be one of ${COLORS.map(
+        ({ id }) => id
+      )}`
     );
   }
 }
@@ -93,8 +86,8 @@ const GameFactory = {
 function changeColor(
   grid: Grid,
   visitedGrid: Array<boolean>,
-  oldColor: Color,
-  newColor: Color,
+  oldColor: ColorId,
+  newColor: ColorId,
   currentIndex: number,
   dimension: number
 ) {
@@ -148,7 +141,7 @@ function changeColor(
 }
 
 class Game implements IGame {
-  private moves: Array<Color> = [];
+  private moves: Array<ColorId> = [];
   private gameOver: boolean = false;
   constructor(private grid: Grid, private dimension: number) {}
 
@@ -168,7 +161,7 @@ class Game implements IGame {
     return this.moves.length;
   }
 
-  nextMove(newColor: Color) {
+  nextMove(newColor: ColorId) {
     if (this.gameOver) {
       return;
     }
@@ -280,11 +273,4 @@ function getTop(currentIndex: number, dimension: number) {
   return currentIndex - dimension;
 }
 
-export {
-  Color,
-  IGame,
-  colors,
-  colorMapping,
-  GameFactory,
-  getConnectedNeighbours,
-};
+export { IGame, GameFactory, getConnectedNeighbours };

@@ -1,7 +1,9 @@
 import request, { Response } from "supertest";
 import { app } from "./App";
-import { Color } from "./game/Game";
 import { GameService } from "./GameService";
+import { ColorId } from "./game/GameConfig";
+
+jest.mock("./game/GameConfig");
 
 describe("App routes", () => {
   beforeEach(() => {
@@ -47,7 +49,7 @@ describe("App routes", () => {
   });
 
   describe("Calling next move with invalid colors", () => {
-    const sendNextMoveRequest = (color: Color) =>
+    const sendNextMoveRequest = (color: ColorId) =>
       request(app).put("/api/game/next-move").send({ color });
 
     it("should return 400 response with message 'No game in progress' when there is no game is in progress", async () => {
@@ -76,7 +78,7 @@ describe("App routes", () => {
   });
 
   describe("Calling next move with valid request", () => {
-    const sendNextMoveRequest = (color = Color.BLUE) =>
+    const sendNextMoveRequest = (color = "b") =>
       request(app).put("/api/game/next-move").send({ color });
 
     it("should return 200 response with when a valid color is sent", async () => {
@@ -102,6 +104,7 @@ describe("App routes", () => {
 
       const res = await sendNextMoveRequest();
       const body = res.body;
+
       expect(body.moveHistory).toHaveLength(1);
       expect(body.aiMoveHistory).toHaveLength(1);
     });

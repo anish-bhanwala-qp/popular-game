@@ -1,7 +1,28 @@
 import { AiPlayer } from "./AiPlayer";
-import { Color } from "./Game";
+import { TEST_COLOR_Ids } from "../testUtil";
 
-const { RED: R, GREEN: G, BLUE: B } = Color;
+jest.mock("./GameConfig");
+
+const { R, G, B } = TEST_COLOR_Ids;
+
+/* const COLORS = [
+  { id: R, color: "red" },
+  { id: G, color: "green" },
+  { id: B, color: "blue" },
+];
+
+const DIMENSION = 10;
+
+jest.doMock("./GameConfig", () => ({
+  GameConfig: {
+    getColors(): Array<IColor> {
+      return COLORS.map((val) => ({ ...val }));
+    },
+    getDimension() {
+      return DIMENSION;
+    },
+  },
+})); */
 
 describe("Automated move", () => {
   it("should pick the second color when there are only two colors in the grid", () => {

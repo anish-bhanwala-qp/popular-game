@@ -1,6 +1,11 @@
-import { Color, colors, GameFactory, getConnectedNeighbours } from "./Game";
+import { GameFactory, getConnectedNeighbours } from "./Game";
+import { GameConfig } from "./GameConfig";
+import { TEST_COLOR_Ids } from "../testUtil";
 
-const { RED: R, GREEN: G, BLUE: B } = Color;
+jest.mock("./GameConfig");
+
+const { R, G, B } = TEST_COLOR_Ids;
+const COLORS = GameConfig.getColors();
 
 describe("Initializing game", () => {
   describe("Initialize game with given dimension", () => {
@@ -31,8 +36,8 @@ describe("Initializing game", () => {
       const game = GameFactory.withDimension(5);
 
       let totalMatches = 0;
-      for (const color of game.getGrid()) {
-        expect(colors.find((c) => c === color)).toBeTruthy();
+      for (const colorId of game.getGrid()) {
+        expect(COLORS.find(({ id }) => id === colorId)).toBeTruthy();
         totalMatches++;
       }
 
