@@ -70,7 +70,7 @@ it("should display congrats message with move history when game is over", async 
   const greenBtn = await screen.findByRole("button", { name: "green" });
 
   server.resetHandlers(
-    rest.put("/api/game/next-move", (req, res, ctx) => {
+    rest.put("/api/game/:id/next-move", (req, res, ctx) => {
       return res(
         ctx.status(200),
         ctx.json({

@@ -3,7 +3,7 @@ import { ColorId, GameConfig } from "./GameConfig";
 const COLORS = GameConfig.getColors();
 const DIMENSION = GameConfig.getDimension();
 
-type Grid = Array<ColorId>;
+export type Grid = Array<ColorId>;
 
 interface IGame {
   getGrid(): Grid;

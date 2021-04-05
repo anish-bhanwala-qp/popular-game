@@ -2,6 +2,7 @@ import { TEST_COLORS } from "../../testUtil";
 import { IColor } from "../GameConfig";
 
 const DIMENSION = 10;
+const GAMES_LIMIT = 10;
 
 /* jest.doMock("./GameConfig", () => ({
   GameConfig: {
@@ -20,5 +21,8 @@ export const GameConfig = {
   },
   getDimension() {
     return DIMENSION;
+  },
+  gamesLimit() {
+    return GAMES_LIMIT;
   },
 };

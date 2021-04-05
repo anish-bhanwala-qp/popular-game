@@ -1,34 +1,21 @@
 import express, { NextFunction, Request, Response } from "express";
-import { GameConfig } from "./game/GameConfig";
-import { GameService } from "./GameService";
-
-const COLORS = GameConfig.getColors();
+import { GameService } from "./game/GameService";
+import { ValidationError } from "./ValidationError";
 
 export const app = express();
+const gameService = new GameService();
 
 app.use(express.json());
 
 app.get("/api/game/start", (req, res, next) => {
-  const game = GameService.start();
+  const game = gameService.start();
   res.status(200).send(game);
 });
 
-app.put("/api/game/next-move", (req, res, next) => {
-  if (!GameService.isGameInProgress()) {
-    return res.status(400).send({ message: "No game in progress" });
-  }
-
-  if (!req.body || !req.body.color) {
-    return res.status(400).send({ message: "Please select a valid color" });
-  }
+app.put("/api/game/:id/next-move", (req, res, next) => {
+  const { id } = req.params;
   const { color } = req.body;
-  const isValidColor = COLORS.find(({ id }) => color === id) != null;
-  if (!isValidColor) {
-    return res.status(400).send({ message: "Please select a valid color" });
-  }
-
-  const newGameState = GameService.nextMove(color);
-
+  const newGameState = gameService.nextMove(+id, color);
   return res.status(200).send(newGameState);
 });
 
@@ -38,6 +25,10 @@ app.use((req, res) => {
 });
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+  if (err instanceof ValidationError) {
+    return res.status(400).send({ message: err.message });
+  }
+
   console.error(err.stack);
   res.status(500).send("Oops an error occurred!");
 });

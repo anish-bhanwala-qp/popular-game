@@ -18,6 +18,7 @@ export const ColorsContext = React.createContext<Array<Color>>([]);
 function App() {
   const [loading, setLoading] = useState(true);
   const [serverError, setServerError] = useState("");
+  const [gameId, setGameId] = useState<number>(-1);
   const [grid, setGrid] = useState<Grid>([]);
   const [colors, setColors] = useState<Array<Color>>([]);
   const [dimension, setDimension] = useState<number>(1);
@@ -28,7 +29,7 @@ function App() {
   const colorPickedHandler = (colorId: ColorId) => {
     setLoading(true);
 
-    apiCall("/api/game/next-move", "PUT", { color: colorId })
+    apiCall(`/api/game/${gameId}/next-move`, "PUT", { color: colorId })
       .then((data: NextMoveServerResponse) => {
         setGrid([...data.grid]);
         setIsGameOver(data.isGameOver);
@@ -51,6 +52,7 @@ function App() {
         setGrid([...data.grid]);
         setColors([...data.colors]);
         setDimension(data.dimension);
+        setGameId(data.id);
       })
       .catch(() =>
         setServerError("Oops an error occurred on server. Please refresh.")

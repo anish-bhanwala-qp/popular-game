@@ -7,6 +7,8 @@ const COLORS = [
 
 const DIMENSION = 10;
 
+const GAMES_LIMIT = 10;
+
 // simple check to avoid using duplicate ids by mistake
 (function validateUniqueIds() {
   const set = new Set();
@@ -30,5 +32,8 @@ export const GameConfig = Object.freeze({
   },
   getDimension() {
     return DIMENSION;
+  },
+  gamesLimit() {
+    return GAMES_LIMIT;
   },
 });
