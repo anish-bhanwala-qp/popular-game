@@ -12,11 +12,15 @@ app.get("/api/game/start", (req, res, next) => {
   res.status(200).send(game);
 });
 
-app.put("/api/game/:id/next-move", (req, res, next) => {
+app.put("/api/game/:id/next-move", async (req, res, next) => {
   const { id } = req.params;
   const { color } = req.body;
-  const newGameState = gameService.nextMove(+id, color);
-  return res.status(200).send(newGameState);
+  try {
+    const newGameState = await gameService.nextMove(+id, color);
+    res.status(200).send(newGameState);
+  } catch (err) {
+    next(err);
+  }
 });
 
 // Handle 404 routes

@@ -48,20 +48,22 @@ export class GameService {
     return convertToGameDto(newGame);
   }
 
-  nextMove(gameId: number, color: ColorId) {
+  async nextMove(gameId: number, color: ColorId) {
     const game = this.games.find((g) => g.id === gameId);
     if (!game) {
-      throw new ValidationError("No game found for given game id");
+      return Promise.reject(
+        new ValidationError("No game found for given game id")
+      );
     }
 
     const isValidColor = COLORS.find(({ id }) => color === id) != null;
     if (!isValidColor) {
-      throw new ValidationError("Please select a valid color");
+      return Promise.reject(new ValidationError("Please select a valid color"));
     }
 
     const { realPlayerGame, aiPlayerGame } = game;
 
-    realPlayerGame.nextMove(color);
+    await realPlayerGame.nextMove(color);
 
     // Make AI move as well
     if (!aiPlayerGame.isGameOver()) {
@@ -69,7 +71,7 @@ export class GameService {
         aiPlayerGame.getGrid(),
         DIMENSION
       );
-      aiPlayerGame.nextMove(nextColor);
+      await aiPlayerGame.nextMove(nextColor);
     }
 
     // Remove game from array if over

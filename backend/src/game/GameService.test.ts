@@ -1,5 +1,5 @@
 import { GameService } from "./GameService";
-import { findNonOriginColorId } from "../testUtil";
+import { findNonOriginColorId, TEST_COLOR_Ids } from "../testUtil";
 
 describe("GameService", () => {
   it("should start game id from 1", () => {
@@ -15,19 +15,21 @@ describe("GameService", () => {
     expect(game2.id).toBe(2);
   });
 
-  it("should throw ValidationError if game id is invalid", () => {
+  it("should throw ValidationError if game id is invalid", async () => {
     const gameService = new GameService();
-    expect(() => gameService.nextMove(-1, "b")).toThrow(
-      "No game found for given game id"
-    );
+
+    const result = gameService.nextMove(-1, TEST_COLOR_Ids.B);
+    await expect(result).rejects.toEqual({
+      message: "No game found for given game id",
+    });
   });
 
-  it("should throw ValidationError if color is invalid", () => {
+  it("should throw ValidationError if color is invalid", async () => {
     const gameService = new GameService();
     const { id } = gameService.start();
-    expect(() => gameService.nextMove(id, "invalid-color")).toThrow(
-      "Please select a valid color"
-    );
+    await expect(gameService.nextMove(id, "invalid-color")).rejects.toEqual({
+      message: "Please select a valid color",
+    });
   });
 
   it("should return grid with 100 length for dimension 10 when game is started", async () => {
@@ -48,12 +50,12 @@ describe("GameService", () => {
 
     // Pick color that's not origin, otherwise the move is ignored.
     const move1ColorId = findNonOriginColorId(grid);
-    const move1 = gameService.nextMove(id, move1ColorId);
+    const move1 = await gameService.nextMove(id, move1ColorId);
     expect(move1.moveHistory).toEqual([move1ColorId]);
 
     // Pick color that's not origin, otherwise the move is ignored.
     const move2ColorId = findNonOriginColorId(move1.grid);
-    const move2 = gameService.nextMove(id, move2ColorId);
+    const move2 = await gameService.nextMove(id, move2ColorId);
     expect(move2.moveHistory).toEqual([move1ColorId, move2ColorId]);
   });
 
@@ -61,7 +63,7 @@ describe("GameService", () => {
     const gameService = new GameService();
     const { id, grid } = gameService.start();
     const nonOriginColorId = findNonOriginColorId(grid);
-    const { moveHistory, aiMoveHistory } = gameService.nextMove(
+    const { moveHistory, aiMoveHistory } = await gameService.nextMove(
       id,
       nonOriginColorId
     );
@@ -70,23 +72,23 @@ describe("GameService", () => {
     expect(aiMoveHistory).toHaveLength(1);
   });
 
-  it("should allow two games to be played at the same time", () => {
+  it("should allow two games to be played at the same time", async () => {
     const gameService = new GameService();
     const game1 = gameService.start();
     const game2 = gameService.start();
 
     // Pick color that's not origin, otherwise the move is ignored.
     const game1ColorId = findNonOriginColorId(game1.grid);
-    const game1Move1 = gameService.nextMove(game1.id, game1ColorId);
+    const game1Move1 = await gameService.nextMove(game1.id, game1ColorId);
     expect(game1Move1.moveHistory).toEqual([game1ColorId]);
 
     // Pick color that's not origin, otherwise the move is ignored.
     const game2ColorId = findNonOriginColorId(game2.grid);
-    const game2Move1 = gameService.nextMove(game2.id, game2ColorId);
+    const game2Move1 = await gameService.nextMove(game2.id, game2ColorId);
     expect(game2Move1.moveHistory).toEqual([game2ColorId]);
   });
 
-  it("should remove games that have been completed", () => {
+  it("should remove games that have been completed", async () => {
     const gameService = new GameService();
     gameService.start();
     gameService.start();
@@ -99,7 +101,7 @@ describe("GameService", () => {
     let maxLoopCount = 1000;
     while (maxLoopCount-- > 0) {
       const nonOriginColorId = findNonOriginColorId(latestGrid);
-      let newGameState = gameService.nextMove(game.id, nonOriginColorId);
+      let newGameState = await gameService.nextMove(game.id, nonOriginColorId);
       latestGrid = newGameState.grid;
       if (newGameState.isGameOver) {
         break;

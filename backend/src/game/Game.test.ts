@@ -107,7 +107,7 @@ describe("getConnectedNeighbours for a 4 x 4 grid", () => {
 
 describe("Making moves", () => {
   describe("Game over detection", () => {
-    it("should return false when game is not over (all tiles are not of same color) yet after a move", () => {
+    it("should return false when game is not over (all tiles are not of same color) yet after a move", async () => {
       // prettier-ignore
       const input = [
         R, G, G, B,
@@ -117,11 +117,11 @@ describe("Making moves", () => {
     ];
 
       const game = GameFactory.withGrid(input, 4);
-      game.nextMove(B);
+      await game.nextMove(B);
       expect(game.isGameOver()).toBeFalsy();
     });
 
-    it("should return true when game is over (all tiles are of same color)", () => {
+    it("should return true when game is over (all tiles are of same color)", async () => {
       // prettier-ignore
       const input = [
         R, R, R, B,
@@ -131,12 +131,12 @@ describe("Making moves", () => {
     ];
 
       const game = GameFactory.withGrid(input, 4);
-      game.nextMove(B);
+      await game.nextMove(B);
 
       expect(game.isGameOver()).toBeTruthy();
     });
 
-    it("should ignore move when game is already over", () => {
+    it("should ignore move when game is already over", async () => {
       // prettier-ignore
       const input = [
           R, R, R, B,
@@ -146,16 +146,16 @@ describe("Making moves", () => {
       ];
 
       const game = GameFactory.withGrid(input, 4);
-      game.nextMove(B);
+      await game.nextMove(B);
       expect(game.isGameOver()).toBeTruthy();
       const moveCount = game.moveCount();
 
-      game.nextMove(R);
+      await game.nextMove(R);
       expect(game.moveCount()).toBe(moveCount);
     });
   });
 
-  it("should increment the move count for valid move", () => {
+  it("should increment the move count for valid move", async () => {
     // prettier-ignore
     const input = [
         R, G, G, B,
@@ -165,15 +165,16 @@ describe("Making moves", () => {
     ];
 
     const game = GameFactory.withGrid(input, 4);
-    game.nextMove(B);
+    await game.nextMove(B);
     expect(game.moveCount()).toBe(1);
     expect(game.getMoves()).toEqual([B]);
-    game.nextMove(R);
+
+    await game.nextMove(R);
     expect(game.moveCount()).toBe(2);
     expect(game.getMoves()).toEqual([B, R]);
   });
 
-  it("should not increment the move count when trying to make move without color change", () => {
+  it("should not increment the move count when trying to make move without color change", async () => {
     // prettier-ignore
     const input = [
         R, G, G, B,
@@ -184,11 +185,11 @@ describe("Making moves", () => {
 
     const game = GameFactory.withGrid(input, 4);
     // color is same as origin
-    game.nextMove(R);
+    await game.nextMove(R);
     expect(game.moveCount()).toBe(0);
   });
 
-  it("should change color of only connected tiles", () => {
+  it("should change color of only connected tiles", async () => {
     // prettier-ignore
     const input = [
         R, G, G, B,
@@ -211,12 +212,12 @@ describe("Making moves", () => {
     ];
 
     const game = GameFactory.withGrid(input, 4);
-    game.nextMove(B);
+    await game.nextMove(B);
 
     expect(game.getGrid()).toEqual(expected);
   });
 
-  it("should not make any changes if new color is same as origin", () => {
+  it("should not make any changes if new color is same as origin", async () => {
     // prettier-ignore
     const expected = [
         R, G, G, B,
@@ -226,12 +227,12 @@ describe("Making moves", () => {
     ];
 
     const game = GameFactory.withGrid(expected, 4);
-    game.nextMove(R);
+    await game.nextMove(R);
 
     expect(game.getGrid()).toEqual(expected);
   });
 
-  it("should not change color for diagonal neighbours", () => {
+  it("should not change color for diagonal neighbours", async () => {
     // The bottom row has two Red tiles that are diagonally connected
     // prettier-ignore
     const input = [
@@ -249,7 +250,7 @@ describe("Making moves", () => {
     ];
 
     const game = GameFactory.withGrid(input, 4);
-    game.nextMove(B);
+    await game.nextMove(B);
 
     expect(game.getGrid()).toEqual(expected);
   });

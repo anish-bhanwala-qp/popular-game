@@ -9,7 +9,7 @@ interface IGame {
   getGrid(): Grid;
   getDimension(): number;
   isGameOver(): boolean;
-  nextMove(color: ColorId): void;
+  nextMove(color: ColorId): Promise<void>;
   getMoves(): Array<ColorId>;
 }
 
@@ -90,54 +90,40 @@ function changeColor(
   newColor: ColorId,
   currentIndex: number,
   dimension: number
-) {
+): Promise<void> {
   const visited = visitedGrid[currentIndex];
   const currentColor = grid[currentIndex];
 
   if (visited) {
-    return;
+    return Promise.resolve();
   }
 
   visitedGrid[currentIndex] = true;
   // Only flip color matching to origin, ignore this one
   if (currentColor !== oldColor) {
-    return;
+    return Promise.resolve();
   }
 
   // flip the color
   grid[currentIndex] = newColor;
 
   const neighbourIndexes = getConnectedNeighbours(currentIndex, dimension);
+
+  const neighbourPromises: Array<Promise<void>> = [];
   neighbourIndexes.forEach((neighbourIndex) =>
-    changeColor(
-      grid,
-      visitedGrid,
-      oldColor,
-      newColor,
-      neighbourIndex,
-      dimension
+    neighbourPromises.push(
+      changeColor(
+        grid,
+        visitedGrid,
+        oldColor,
+        newColor,
+        neighbourIndex,
+        dimension
+      )
     )
   );
 
-  /* const topIndex = getTop(currentIndex, dimension);
-  if (topIndex != null) {
-    changeColor(grid, visitedGrid, oldColor, newColor, topIndex, dimension);
-  }
-
-  const rightIndex = getRight(currentIndex, dimension);
-  if (rightIndex != null) {
-    changeColor(grid, visitedGrid, oldColor, newColor, rightIndex, dimension);
-  }
-
-  const bottomIndex = getBottom(currentIndex, dimension);
-  if (bottomIndex != null) {
-    changeColor(grid, visitedGrid, oldColor, newColor, bottomIndex, dimension);
-  }
-
-  const leftIndex = getLeft(currentIndex, dimension);
-  if (leftIndex != null) {
-    changeColor(grid, visitedGrid, oldColor, newColor, leftIndex, dimension);
-  } */
+  return Promise.all(neighbourPromises).then(() => Promise.resolve());
 }
 
 class Game implements IGame {
@@ -161,22 +147,22 @@ class Game implements IGame {
     return this.moves.length;
   }
 
-  nextMove(newColor: ColorId) {
+  nextMove(newColor: ColorId): Promise<void> {
     if (this.gameOver) {
-      return;
+      return Promise.resolve();
     }
 
     const originColor = this.grid[0];
     // No change in color, ignore
     if (newColor === originColor) {
-      return;
+      return Promise.resolve();
     }
 
     // track moves made
     this.moves.push(newColor);
 
     const visitedGrid = this.grid.map((_) => false);
-    changeColor(
+    const changeColorPromise = changeColor(
       this.grid,
       visitedGrid,
       originColor,
@@ -185,7 +171,9 @@ class Game implements IGame {
       this.dimension
     );
 
-    this.checkGameOver();
+    return changeColorPromise.then(() => {
+      this.checkGameOver();
+    });
   }
 
   private checkGameOver() {
